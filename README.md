@@ -25,4 +25,4 @@ Testy
 7. Próba wrzucenia ujemnej oraz niecałkowitej liczby monet (oczekiwany komunikat o błędzie).
 
 
-Link do mojego GitHuba: 
+Link do mojego GitHuba: https://gitfront.io/r/michalmroz/5e7f4754f280dbcf8d80a614dd3599388fb09e37/AutomatBiletowyMPK/
