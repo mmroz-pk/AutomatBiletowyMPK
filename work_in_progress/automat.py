@@ -3,9 +3,18 @@ import PySimpleGUI as gui
 cennik = [0, 2, 4, 6, 1, 2, 3]
 
 suma = 0
-ilosc_suma = 0
+
+suma_20n = 0
+suma_40n = 0
+suma_60n = 0
+
+suma_20u = 0
+suma_40u = 0
+suma_60u = 0
 
 ilosc = 0
+ilosc_suma = 0
+
 ilosc_20n = 0
 ilosc_40n = 0
 ilosc_60n = 0
@@ -32,7 +41,8 @@ layout = [
     [gui.Text("Wybierz bilet")],
     [gui.Button("1"), gui.Button("2"), gui.Button("3"), gui.Button("4"), gui.Button("5"), gui.Button("6")],
     [gui.Text("---")],
-    [gui.Text("Ilość:"), gui.Text('0', key='-ILOSC-', size=(3, 1)), gui.Button("+"), gui.Button("-"), gui.Button("Zeruj")],
+    [gui.Text("Ilość:"), gui.Text('0', key='-ILOSC-', size=(3, 1)), gui.Button("+"), gui.Button("-"),
+     gui.Button("Zeruj")],
     [gui.Text("---")],
     [gui.Text("Suma:"), gui.Text('0', key='-SUMA-'), gui.Text("zł")],
     [gui.Text("---")],
@@ -46,88 +56,114 @@ window = gui.Window("Automat MPK", layout, size=(300, 540))
 ######################
 # Pętla z warunkami
 ######################
+
+######################
+# Uwaga #1: Popraw weryfikatora, który dodaje ujemną liczbę sztuk biletów do automatu (testowano na bilecie #1) - done
+# Uwagi #2: Jak dodasz funkcji dodania oraz odejmowania ilości, zacznij nad bramką płatności - done - in progress
+# Uwagi #3: Jak będzie wszystko działać, spróbuj po troche modyfikować kod tak aby spełniał wymogi Wojtasa
+######################
 while True:
     event, values = window.read()
-    # End program if user closes window or
-    # presses the OK button
+
+    # Dodaj ilość
     if event == "+":
         ilosc += 1
         window['-ILOSC-'].update(ilosc)
 
+    # Odejmuj ilość
     if event == "-":
         ilosc += -1
+        if ilosc <= 0:
+            ilosc = 0
         window['-ILOSC-'].update(ilosc)
 
+    # Zeruj ilość
     if event == "Zeruj":
         ilosc = 0
         window['-ILOSC-'].update(ilosc)
-    # Bilet #1
+
+    # Przycisk - Bilet #1
     if event == "1":
-        if ilosc == 0:
-            suma += 0
-            ilosc_suma += 0
-            ilosc_20n += 0
-            window['-SUMA-'].update(suma)
-            gui.popup("Podaj ilość")
-        if ilosc > 0:
-            suma += cennik[1] * ilosc
-            ilosc_suma += ilosc
-            ilosc_20n += ilosc
-            window['-SUMA-'].update(suma)
-            # gui.popup("Dodano bilet #1")
-            window['20n'].update(f"- (Wybrano {ilosc_20n} szt.)")
-        if ilosc < 0:
-            suma += cennik[1] * ilosc
-            ilosc_suma += ilosc
-            ilosc_20n += ilosc
-            window['-SUMA-'].update(suma)
-            # gui.popup("Dodano bilet #1")
-            window['20n'].update(f"- (Wybrano {ilosc_20n} szt.)")
-    # Bilet #2
+        if suma_20n > 0:
+            suma -= suma_20n
+        suma_20n = cennik[1] * ilosc
+        suma += suma_20n
+        ilosc_20n = ilosc
+        window['-SUMA-'].update(suma)
+        # gui.popup("Dodano bilet #1")
+        window['20n'].update(f"- (Wybrano {ilosc_20n} szt.)")
+
+    # Przycisk - Bilet #2
     if event == "2":
-        suma += cennik[2]
-        ilosc_suma += 1
-        ilosc_40n += 1
+        if suma_40n > 0:
+            suma -= suma_40n
+        suma_40n = cennik[2] * ilosc
+        suma += suma_40n
+        ilosc_suma += ilosc
+        ilosc_40n = ilosc
         window['-SUMA-'].update(suma)
-        gui.popup("Dodano bilet #2")
+        # gui.popup("Dodano bilet #2")
         window['40n'].update(f"- (Wybrano {ilosc_40n} szt.)")
-    # Bilet #3
+
+    # Przycisk - Bilet #3
     if event == "3":
-        suma += cennik[3]
-        ilosc_suma += 1
-        ilosc_60n += 1
+        if suma_60n > 0:
+            suma -= suma_60n
+        suma_60n = cennik[3] * ilosc
+        suma += suma_60n
+        ilosc_suma += ilosc
+        ilosc_60n = ilosc
         window['-SUMA-'].update(suma)
-        gui.popup("Dodano bilet #3")
+        # gui.popup("Dodano bilet #2")
         window['60n'].update(f"- (Wybrano {ilosc_60n} szt.)")
-    # Bilet #4
+
+    # Przycisk - Bilet #4
     if event == "4":
-        suma += cennik[4]
-        ilosc_suma += 1
-        ilosc_20u += 1
+        if suma_20u > 0:
+            suma -= suma_20u
+        suma_20u = cennik[4] * ilosc
+        suma += suma_20u
+        ilosc_suma += ilosc
+        ilosc_20u = ilosc
         window['-SUMA-'].update(suma)
-        gui.popup("Dodano bilet #4")
+        # gui.popup("Dodano bilet #2")
         window['20u'].update(f"- (Wybrano {ilosc_20u} szt.)")
-    # Bilet #5
+
+    # Przycisk - Bilet #5
     if event == "5":
-        suma += cennik[5]
-        ilosc_suma += 1
-        ilosc_40u += 1
+        if suma_40u > 0:
+            suma -= suma_40u
+        suma_40u = cennik[5] * ilosc
+        suma += suma_40u
+        ilosc_suma += ilosc
+        ilosc_40u = ilosc
         window['-SUMA-'].update(suma)
-        gui.popup("Dodano bilet #5")
+        # gui.popup("Dodano bilet #2")
         window['40u'].update(f"- (Wybrano {ilosc_40u} szt.)")
-    # Bilet #6
+
+    # Przycisk - Bilet #6
     if event == "6":
-        suma += cennik[6]
-        ilosc_suma += 1
-        ilosc_60u += 1
+        if suma_60u > 0:
+            suma -= suma_60u
+        suma_60u = cennik[6] * ilosc
+        suma += suma_60u
+        ilosc_suma += ilosc
+        ilosc_60u = ilosc
         window['-SUMA-'].update(suma)
-        gui.popup("Dodano bilet #6")
+        # gui.popup("Dodano bilet #2")
         window['60u'].update(f"- (Wybrano {ilosc_60u} szt.)")
-    # Wyzeruj wszystko
+
+    # Przycisk - Wyzeruj wszystko
     if event == "Wyzeruj":
         suma = 0
-        ilosc_suma = 0
         ilosc = 0
+        ilosc_suma = 0
+        ilosc_20n = 0
+        ilosc_40n = 0
+        ilosc_60n = 0
+        ilosc_20u = 0
+        ilosc_40u = 0
+        ilosc_60u = 0
         window['20n'].update("")
         window['40n'].update("")
         window['60n'].update("")
@@ -137,14 +173,36 @@ while True:
         window['-SUMA-'].update(suma)
         window['-ILOSC-'].update(ilosc)
         gui.popup("Wyzerowano!")
-    # Wyjdź z Automatu
+    # Przycisk - Wyjdź z Automatu
     if event == "Wyjdź" or event == gui.WIN_CLOSED:
         gui.popup("Do widzenia!")
         exit()
-    # Kupujemy (w budowie)
+
+    ######################
+    # Przycisk - Kupujemy (w budowie)
+    ######################
     if event == "Kup":
-        if ilosc_suma <= 0:
-            gui.popup("Nie wybrano biletu!")
+        if ilosc_suma == 0:
+            gui.popup("Nie wybrano biletu")
+        elif suma <= 0:
+            suma = 0
+            ilosc_suma = 0
+            ilosc = 0
+            ilosc_20n = 0
+            ilosc_40n = 0
+            ilosc_60n = 0
+            ilosc_20u = 0
+            ilosc_40u = 0
+            ilosc_60u = 0
+            window['20n'].update("")
+            window['40n'].update("")
+            window['60n'].update("")
+            window['20u'].update("")
+            window['40u'].update("")
+            window['60u'].update("")
+            window['-SUMA-'].update(suma)
+            window['-ILOSC-'].update(ilosc)
+            gui.popup("Nie można kontynuuować z negatywną sumą")
         elif ilosc_suma > 0:
             gui.popup("Płacimy :)")
             ######################
@@ -163,9 +221,9 @@ while True:
             event, values = window_two.read()
 
             if event == "1":
-               gui.popup("Awesome")
+                gui.popup("Awesome")
             if event == "Zapłać":
-               gui.popup("Awesome")
+                gui.popup("Awesome")
             if event == "Wróć" or event == gui.WIN_CLOSED:
-               gui.popup("Awesome")
-               window_two.close()
+                gui.popup("Awesome")
+                window_two.close()
