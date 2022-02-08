@@ -1,86 +1,171 @@
-#automat przechowuje
-kasa_gr = (0.01, 0.02, 0.05, 0.1, 0.2, 0.5)
-kasa_zl = (1, 2, 5, 10, 20, 50)
-cennik = (0, 4, 5, 6, 2, 2.5, 3)
+import PySimpleGUI as gui
 
-#lista biletów
-print("---")
-print("Witamy w MPK - Wybierz rodzaj biletu")
-print("---")
+cennik = [0, 2, 4, 6, 1, 2, 3]
 
-print("Bilet Normalny:")
-print("(1) 20-minutowy")
-print("(2) 40-minutowy")
-print("(3) 60-minutowy")
-print("---")
-print("Bilet Ulgowy (-50%):")
-print("(4) 20-minutowy")
-print("(5) 40-minutowy")
-print("(6) 60-minutowy")
-print("---")
+suma = 0
+ilosc_suma = 0
 
-#Wybór klienta
-opcja = int(input("Wprowadź cyfrę (1-6): "))
+ilosc = 0
+ilosc_20n = 0
+ilosc_40n = 0
+ilosc_60n = 0
 
-#Sprawdz poprawność
-while opcja <=0 or opcja >=7:
-    print("Niepoprawny numer")
-    opcja = int(input("Wprowadź cyfrę (1-6): "))
+ilosc_20u = 0
+ilosc_40u = 0
+ilosc_60u = 0
 
-opcja_ilosc = int(input("Wprowadź ilość: "))
+######################
+# Główne Menu Automatu
+######################
+layout = [
+    [gui.Text("-- Automat MPK --")],
+    [gui.Text("Bilet Normalny:")],
+    [gui.Text("(1) 20-minutowy = 2 zł"), gui.Text(key='20n')],
+    [gui.Text("(2) 40-minutowy = 4 zł"), gui.Text(key='40n')],
+    [gui.Text("(3) 60-minutowy = 6 zł"), gui.Text(key='60n')],
+    [gui.Text("---")],
+    [gui.Text("Bilet Ulgowy (-50%):")],
+    [gui.Text("(4) 20-minutowy = 1 zł"), gui.Text(key='20u')],
+    [gui.Text("(5) 40-minutowy = 2 zł"), gui.Text(key='40u')],
+    [gui.Text("(6) 60-minutowy = 3 zł"), gui.Text(key='60u')],
+    [gui.Text("---")],
+    [gui.Text("Wybierz bilet")],
+    [gui.Button("1"), gui.Button("2"), gui.Button("3"), gui.Button("4"), gui.Button("5"), gui.Button("6")],
+    [gui.Text("---")],
+    [gui.Text("Ilość:"), gui.Text('0', key='-ILOSC-', size=(3, 1)), gui.Button("+"), gui.Button("-"), gui.Button("Zeruj")],
+    [gui.Text("---")],
+    [gui.Text("Suma:"), gui.Text('0', key='-SUMA-'), gui.Text("zł")],
+    [gui.Text("---")],
+    [gui.Button("Kup"), gui.Button("Wyzeruj"), gui.Button("Wyjdź")]
+]
+######################
+# Stwórz okno
+######################
+window = gui.Window("Automat MPK", layout, size=(300, 540))
 
+######################
+# Pętla z warunkami
+######################
+while True:
+    event, values = window.read()
+    # End program if user closes window or
+    # presses the OK button
+    if event == "+":
+        ilosc += 1
+        window['-ILOSC-'].update(ilosc)
 
+    if event == "-":
+        ilosc += -1
+        window['-ILOSC-'].update(ilosc)
 
-if opcja == 1:
-    rodzaj_biletu = "20-minutowy"
-    typ_biletu = "Normalny"
-    cena_biletu = cennik[1]
-    suma_kosztow = cennik[1] * opcja_ilosc
-elif opcja == 2:
-    rodzaj_biletu = "40-minutowy"
-    typ_biletu = "Normalny"
-    cena_biletu = cennik[2]
-    suma_kosztow = cennik[2] * opcja_ilosc
-elif opcja == 3:
-    rodzaj_biletu = "60-minutowy"
-    typ_biletu = "Normalny"
-    cena_biletu = cennik[3]
-    suma_kosztow = cennik[3] * opcja_ilosc
-elif opcja == 4:
-    rodzaj_biletu = "40-minutowy"
-    typ_biletu = "Ulgowy"
-    cena_biletu = cennik[4]
-    suma_kosztow = cennik[4] * opcja_ilosc
-elif opcja == 5:
-    rodzaj_biletu = "40-minutowy"
-    typ_biletu = "Ulgowy"
-    cena_biletu = cennik[5]
-    suma_kosztow = cennik[5] * opcja_ilosc
-elif opcja == 6:
-    rodzaj_biletu = "40-minutowy"
-    typ_biletu = "Ulgowy"
-    cena_biletu = cennik[6]
-    suma_kosztow = cennik[6] * opcja_ilosc
+    if event == "Zeruj":
+        ilosc = 0
+        window['-ILOSC-'].update(ilosc)
+    # Bilet #1
+    if event == "1":
+        if ilosc == 0:
+            suma += 0
+            ilosc_suma += 0
+            ilosc_20n += 0
+            window['-SUMA-'].update(suma)
+            gui.popup("Podaj ilość")
+        if ilosc > 0:
+            suma += cennik[1] * ilosc
+            ilosc_suma += ilosc
+            ilosc_20n += ilosc
+            window['-SUMA-'].update(suma)
+            # gui.popup("Dodano bilet #1")
+            window['20n'].update(f"- (Wybrano {ilosc_20n} szt.)")
+        if ilosc < 0:
+            suma += cennik[1] * ilosc
+            ilosc_suma += ilosc
+            ilosc_20n += ilosc
+            window['-SUMA-'].update(suma)
+            # gui.popup("Dodano bilet #1")
+            window['20n'].update(f"- (Wybrano {ilosc_20n} szt.)")
+    # Bilet #2
+    if event == "2":
+        suma += cennik[2]
+        ilosc_suma += 1
+        ilosc_40n += 1
+        window['-SUMA-'].update(suma)
+        gui.popup("Dodano bilet #2")
+        window['40n'].update(f"- (Wybrano {ilosc_40n} szt.)")
+    # Bilet #3
+    if event == "3":
+        suma += cennik[3]
+        ilosc_suma += 1
+        ilosc_60n += 1
+        window['-SUMA-'].update(suma)
+        gui.popup("Dodano bilet #3")
+        window['60n'].update(f"- (Wybrano {ilosc_60n} szt.)")
+    # Bilet #4
+    if event == "4":
+        suma += cennik[4]
+        ilosc_suma += 1
+        ilosc_20u += 1
+        window['-SUMA-'].update(suma)
+        gui.popup("Dodano bilet #4")
+        window['20u'].update(f"- (Wybrano {ilosc_20u} szt.)")
+    # Bilet #5
+    if event == "5":
+        suma += cennik[5]
+        ilosc_suma += 1
+        ilosc_40u += 1
+        window['-SUMA-'].update(suma)
+        gui.popup("Dodano bilet #5")
+        window['40u'].update(f"- (Wybrano {ilosc_40u} szt.)")
+    # Bilet #6
+    if event == "6":
+        suma += cennik[6]
+        ilosc_suma += 1
+        ilosc_60u += 1
+        window['-SUMA-'].update(suma)
+        gui.popup("Dodano bilet #6")
+        window['60u'].update(f"- (Wybrano {ilosc_60u} szt.)")
+    # Wyzeruj wszystko
+    if event == "Wyzeruj":
+        suma = 0
+        ilosc_suma = 0
+        ilosc = 0
+        window['20n'].update("")
+        window['40n'].update("")
+        window['60n'].update("")
+        window['20u'].update("")
+        window['40u'].update("")
+        window['60u'].update("")
+        window['-SUMA-'].update(suma)
+        window['-ILOSC-'].update(ilosc)
+        gui.popup("Wyzerowano!")
+    # Wyjdź z Automatu
+    if event == "Wyjdź" or event == gui.WIN_CLOSED:
+        gui.popup("Do widzenia!")
+        exit()
+    # Kupujemy (w budowie)
+    if event == "Kup":
+        if ilosc_suma <= 0:
+            gui.popup("Nie wybrano biletu!")
+        elif ilosc_suma > 0:
+            gui.popup("Płacimy :)")
+            ######################
+            # Podsumowanie
+            ######################
+            layout_two = [
+                [gui.Text("-- Automat MPK --")],
+                [gui.Text("---")],
+                [gui.Text(f"Suma: {suma} zł", key='-SUMA-')],
+                [gui.Button("1"), gui.Button("2"), gui.Button("3"), gui.Button("4"), gui.Button("5"), gui.Button("6")],
+                [gui.Text("---")],
+                [gui.Button("Zapłać"), gui.Button("Modyfikuj"), gui.Button("Wróć")]
+            ]
 
-print("---")
+            window_two = gui.Window("Automat MPK", layout_two)
+            event, values = window_two.read()
 
-print("*Twój Koszyk*")
-print("---")
-
-print("|" + "ILOŚĆ" + "|" + "BILET" + "|" + "TYP"  + "|" + "WARTOŚĆ" + "|")
-print("---")
-
-print("|" + str(opcja_ilosc) + "x" + "|" + rodzaj_biletu + "|" + typ_biletu + "|" + str(cena_biletu) + "zł|")
-print("---")
-
-print("Do zapłacenia: " + str(suma_kosztow) + " zł")
-print("---")
-wybor = int(input("(1) Dalej, (2) Kontynuuj Zakupy, (3) Usun: "))
-
-while wybor <=0 or wybor >=4:
-    print("Niepoprawny numer")
-    wybor = int(input("(1) Dalej, (2) Kontynuuj Zakupy, (3) Usun: "))
-
-#to be continued...
-
-
+            if event == "1":
+               gui.popup("Awesome")
+            if event == "Zapłać":
+               gui.popup("Awesome")
+            if event == "Wróć" or event == gui.WIN_CLOSED:
+               gui.popup("Awesome")
+               window_two.close()
