@@ -1,8 +1,8 @@
 import PySimpleGUI as gui
 
-# Wartość w groszach
-automat = (0, 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000)
-cennik = (0, 200, 400, 600, 100, 200, 300)
+# Wartość w zł
+automat = (0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50)
+cennik = (0, 2, 4, 6, 1, 2, 3)
 
 ######################
 # Pieniądze przechowane w Automacie
@@ -111,10 +111,10 @@ while True:
     if event == "1":
         if suma_20n >= 1:
             suma -= suma_20n
-            suma //= 100  # podziel przez 100
+            
         suma_20n = cennik[1] * ilosc
         suma += suma_20n
-        suma //= 100  # podziel przez 100
+        
         ilosc_suma += ilosc
         ilosc_20n = ilosc
         window['-SUMA-'].update(suma)
@@ -124,10 +124,10 @@ while True:
     if event == "2":
         if suma_40n > 0:
             suma -= suma_40n
-            suma //= 100  # podziel przez 100
+            
         suma_40n = cennik[2] * ilosc
         suma += suma_40n
-        suma //= 100  # podziel przez 100
+        
         ilosc_suma += ilosc
         ilosc_40n = ilosc
         window['-SUMA-'].update(suma)
@@ -137,10 +137,10 @@ while True:
     if event == "3":
         if suma_60n > 0:
             suma -= suma_60n
-            suma //= 100  # podziel przez 100
+            
         suma_60n = cennik[3] * ilosc
         suma += suma_60n
-        suma //= 100  # podziel przez 100
+        
         ilosc_suma += ilosc
         ilosc_60n = ilosc
         window['-SUMA-'].update(suma)
@@ -150,10 +150,10 @@ while True:
     if event == "4":
         if suma_20u > 0:
             suma -= suma_20u
-            suma //= 100  # podziel przez 100
+            
         suma_20u = cennik[4] * ilosc
         suma += suma_20u
-        suma //= 100  # podziel przez 100
+        
         ilosc_suma += ilosc
         ilosc_20u = ilosc
         window['-SUMA-'].update(suma)
@@ -163,10 +163,10 @@ while True:
     if event == "5":
         if suma_40u > 0:
             suma -= suma_40u
-            suma //= 100  # podziel przez 100
+            
         suma_40u = cennik[5] * ilosc
         suma += suma_40u
-        suma //= 100  # podziel przez 100
+        
         ilosc_suma += ilosc
         ilosc_40u = ilosc
         window['-SUMA-'].update(suma)
@@ -176,10 +176,10 @@ while True:
     if event == "6":
         if suma_60u > 0:
             suma -= suma_60u
-            suma //= 100  # podziel przez 100
+            
         suma_60u = cennik[6] * ilosc
         suma += suma_60u
-        suma //= 100  # podziel przez 100
+        
         ilosc_suma += ilosc
         ilosc_60u = ilosc
         window['-SUMA-'].update(suma)
@@ -312,7 +312,7 @@ while True:
                         reszta_suma_zmienna = 0
                         window_two['-SUMA-ZMIENNA-'].update("zapłacono")
                         gui.popup(f"Zapłacono całą sumę")
-                
+
                 # draft
                 if event == "2gr":
                     gui.popup("Awesome")
