@@ -1,33 +1,45 @@
+########################################################################
+# Importujemy moduł, który pozwala na utworzenie interfejsu graficznego
+########################################################################
 import PySimpleGUI as gui
 
-# from formatowanie import *
-
+###############
 # Wartość w zł
+###############
+
+# Dostępne nominały w automacie
 automat = (0, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50)
+
+# Cena biletów
 cennik = (0, 2, 4, 6, 1, 2, 3)
 
-######################
-# Pieniądze przechowane w Automacie
-######################
+###############################################################
+# Ilośc poszczególnych monet/banknotów przechowane w Automacie
+###############################################################
 
-# Pobieranie informacji o ilości Monet
-ilosc_1gr = open("./safe/monety/1gr").read()
-ilosc_2gr = open("./safe/monety/2gr").read()
-ilosc_5gr = open("./safe/monety/5gr").read()
-ilosc_10gr = open("./safe/monety/10gr").read()
-ilosc_20gr = open("./safe/monety/20gr").read()
-ilosc_50gr = open("./safe/monety/50gr").read()
-ilosc_1zl = open("./safe/monety/1zl").read()
-ilosc_2zl = open("./safe/monety/2zl").read()
-ilosc_5zl = open("./safe/monety/5zl").read()
+# Monety
+ilosc_1gr = open("./safe/monety/1gr", "r+").read()
+ilosc_2gr = open("./safe/monety/2gr", "r+").read()
+ilosc_5gr = open("./safe/monety/5gr", "r+").read()
+ilosc_10gr = open("./safe/monety/10gr", "r+").read()
+ilosc_20gr = open("./safe/monety/20gr", "r+").read()
+ilosc_50gr = open("./safe/monety/50gr", "r+").read()
+ilosc_1zl = open("./safe/monety/1zl", "r+").read()
+ilosc_2zl = open("./safe/monety/2zl", "r+").read()
+ilosc_5zl = open("./safe/monety/5zl", "r+").read()
+# Banknoty
+ilosc_10zl = open("./safe/banknoty/10zl", "r+").read()
+ilosc_20zl = open("./safe/banknoty/20zl", "r+").read()
+ilosc_50zl = open("./safe/banknoty/50zl", "r+").read()
 
-# Pobieranie informacji o ilości Banknot
-ilosc_10zl = open("./safe/banknoty/10zl").read()
-ilosc_20zl = open("./safe/banknoty/20zl").read()
-ilosc_50zl = open("./safe/banknoty/50zl").read()
-
+###############
+# Suma kosztów
+###############
 suma = 0
 
+###############################
+# Suma osobno wrzuconych monet
+###############################
 suma_1gr = 0
 suma_2gr = 0
 suma_5gr = 0
@@ -44,8 +56,14 @@ suma_10zl = 0
 suma_20zl = 0
 suma_50zl = 0
 
+#################################
+# Ile jeszcze zostało do zapłaty
+#################################
 reszta_do_zaplaty = 0
 
+################################
+# Suma osobno wybranych biletów
+################################
 suma_20n = 0
 suma_40n = 0
 suma_60n = 0
@@ -54,10 +72,24 @@ suma_20u = 0
 suma_40u = 0
 suma_60u = 0
 
+#########################
+# Ilość 1 rodzaju biletu
+#########################
 ilosc = 0
+
+######################
+# Suma ilości biletów
+######################
 ilosc_suma = 0
+
+###############################################
+# Ilość poszczególnej wybranej monety/banknotu
+###############################################
 ilosc_waluty = 0
 
+#################################
+# Ilośc osobno wybranych biletow
+#################################
 ilosc_20n = 0
 ilosc_40n = 0
 ilosc_60n = 0
@@ -66,9 +98,9 @@ ilosc_20u = 0
 ilosc_40u = 0
 ilosc_60u = 0
 
-######################
+#######################
 # Główne Menu Automatu
-######################
+#######################
 layout = [
     [gui.Text("-- Automat MPK --")],
     [gui.Text("Bilet Normalny:")],
@@ -91,29 +123,20 @@ layout = [
     [gui.Text("---")],
     [gui.Button("Kup"), gui.Button("Wyzeruj"), gui.Button("Wyjdź")]
 ]
-######################
+##############
 # Stwórz okno
-######################
+##############
 window = gui.Window("Automat MPK", layout, size=(300, 540))
 
-######################
-# Pętla z warunkami
-######################
-
-######################
-# Uwaga #1: Popraw weryfikatora, który dodaje ujemną liczbę sztuk biletów do automatu (testowano na bilecie #1) - done
-# Uwagi #2: Jak dodasz funkcji dodania oraz odejmowania ilości, zacznij nad bramką płatności - done
-# Uwagi #3: Jak będzie wszystko działać, spróbuj po troche modyfikować kod tak aby spełniał wymogi Pana Wojtasa - later
-######################
 while True:
     event, values = window.read()
 
-    # Dodaj ilość
+    # Dodaj ilość o 1
     if event == "+":
         ilosc += 1
         window['-ILOSC-'].update(ilosc)
 
-    # Odejmuj ilość
+    # Odejmuj ilość o 1
     if event == "-":
         ilosc += -1
         if ilosc <= 0:
@@ -235,9 +258,7 @@ while True:
         gui.popup("Do widzenia!")
         exit()
 
-    ######################
     # Przycisk - Kup
-    ######################
     if event == "Kup":
         if ilosc_suma == 0:
             gui.popup("Nie wybrano biletu")
@@ -260,17 +281,18 @@ while True:
             window['-SUMA-'].update(suma)
             window['-ILOSC-'].update(ilosc)
             gui.popup("Nie można kontynuować z negatywną sumą")
+
+        ###################
+        # Bramka Płatności
+        ###################
         elif ilosc_suma > 0:
-            ######################
-            # Bramka Płatności [Okienko #2]
-            ######################
             layout_two = [
                 [gui.Text("-- Automat MPK --")],
                 [gui.Text("Wyznacz wartość oraz ilość monet/banknot jakie zostaną wprowadzone do automatu")],
                 [gui.Text("Uwaga! Automat nie wydaje reszty - Prosimy o wprowadzenie wyliczonej sumy")],
                 [gui.Text("---")],
                 [gui.Text(f"Suma: {suma} zł", key='-SUMA-')],
-                [gui.Text(f"Reszta do zapłaty:"), gui.Text(f"{suma} zł", key='-SUMA-ZMIENNA-')],
+                [gui.Text(f"Reszta do zapłaty:"), gui.Text(f"{suma}", key='-SUMA-ZMIENNA-'), gui.Text("zł")],
                 [gui.Button("1gr"), gui.Button("2gr"), gui.Button("5gr"), gui.Button("10gr"), gui.Button("20gr"),
                  gui.Button("50gr")],
                 [gui.Button("1zł"), gui.Button("2zł"), gui.Button("5zł"), gui.Button("10zł"), gui.Button("20zł"),
@@ -281,17 +303,14 @@ while True:
                 [gui.Text("---")],
                 [gui.Button("Wróć"), gui.Button("Wyjdź")]
             ]
-
-            ######################
-            # Uwaga #4: Ustaw wartości float tak, aby nie wyświetlało więcej niż 2 cyfry po przecinku - done
-            # Uwaga #5: Warunek if, który sprawdza czy ilość przekracza resztę do zapłaty należy naprawić, bo blokuje
-            # Uwaga #6: Po przyciśnięciu "Zapłać", zweryfikuj ilośc monet/banknotów oraz zapisz je do safe'u
-            # Uwaga #7: Napraw problem, gdzie bramka płatności nie chce działać po kliknięciu "Wróc" i poten "Kup"
-            #####################
-
+            ##########################
+            # Wyświetlanie Okienka #2
+            ##########################
             window_two = gui.Window("Automat MPK", layout_two)
+
             suma = float("{:.3f}".format(suma))
             reszta_do_zaplaty = suma
+
             while True:
                 event, values = window_two.read()
                 # Dodaj ilość
@@ -332,10 +351,20 @@ while True:
                         reszta = float("{:.3f}".format(reszta))
                         suma_1gr += reszta_do_zaplaty
                         suma_1gr = float("{:.3f}".format(suma_1gr))
+                        # Czy jest wystarczająco monet do wydania reszty
+                        odczyt = float(ilosc_1gr) - float(ilosc_waluty)
+                        if odczyt <= 0:
+                            gui.popup(f"Brak monet 1gr do wydania, prosimy o wrzucić wyrównaną sumę - zwrócono resztę: {wrzucam} zł")
+                            pass
+
+                        #Dodaj do automatu
+                        dodaj_do_automatu = float(ilosc_1gr) + float(ilosc_waluty)
+                        ilosc_1gr.write(int(ilosc_waluty))
                         # Spradza co dzieje się dalej
                         print(suma_1gr)
                         print(suma)
                         print(reszta_do_zaplaty)
+
                         window_two['-SUMA-ZMIENNA-'].update("zapłacono")
                         gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
 
@@ -757,6 +786,7 @@ while True:
                         print(reszta_do_zaplaty)
                         window_two['-SUMA-ZMIENNA-'].update("zapłacono")
                         gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
+
 
                     if reszta_do_zaplaty > 0:
                         window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
