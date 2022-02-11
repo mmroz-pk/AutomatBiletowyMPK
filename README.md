@@ -27,7 +27,7 @@ Testy
 
 Link do mojego GitHuba: https://github.com/mmroz-pk/AutomatBiletowyMPK
 
-Projekt znajduje się w katalogu /work_in_progress
+Projekt znajduje się w katalogu Ma href="https://github.com/mmroz-pk/AutomatBiletowyMPK/tree/main/work_in_progress">/work_in_progress</a>
 
 Wymagania:
 - Python 3.10
