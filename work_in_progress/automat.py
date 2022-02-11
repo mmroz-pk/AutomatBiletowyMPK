@@ -18,19 +18,31 @@ cennik = (0, 2, 4, 6, 1, 2, 3)
 ###############################################################
 
 # Monety
-ilosc_1gr = open("./safe/monety/1gr", "r+").read()
-ilosc_2gr = open("./safe/monety/2gr", "r+").read()
-ilosc_5gr = open("./safe/monety/5gr", "r+").read()
-ilosc_10gr = open("./safe/monety/10gr", "r+").read()
-ilosc_20gr = open("./safe/monety/20gr", "r+").read()
-ilosc_50gr = open("./safe/monety/50gr", "r+").read()
-ilosc_1zl = open("./safe/monety/1zl", "r+").read()
-ilosc_2zl = open("./safe/monety/2zl", "r+").read()
-ilosc_5zl = open("./safe/monety/5zl", "r+").read()
+# automat_1gr = open("./safe/monety/1gr", "w+")
+ilosc_1gr = 0
+ilosc_2gr = 0
+ilosc_5gr = 0
+ilosc_10gr = 0
+ilosc_20gr = 0
+ilosc_50gr = 0
+ilosc_1zl = 0
+ilosc_2zl = 0
+ilosc_5zl = 0
+ilosc_10zl = 0
+ilosc_20zl = 0
+ilosc_50zl = 0
+# automat_2gr = open("./safe/monety/2gr", "w+")
+# automat_5gr = open("./safe/monety/5gr", "w+")
+# automat_10gr = open("./safe/monety/10gr", "w+")
+# automat_20gr = open("./safe/monety/20gr", "w+")
+# automat_50gr = open("./safe/monety/50gr", "w+")
+# automat_1zl = open("./safe/monety/1zl", "w+")
+# automat_2zl = open("./safe/monety/2zl", "w+")
+# automat_5zl = open("./safe/monety/5zl", "w+")
 # Banknoty
-ilosc_10zl = open("./safe/banknoty/10zl", "r+").read()
-ilosc_20zl = open("./safe/banknoty/20zl", "r+").read()
-ilosc_50zl = open("./safe/banknoty/50zl", "r+").read()
+# automat_10zl = open("./safe/banknoty/10zl", "w+")
+# automat_20zl = open("./safe/banknoty/20zl", "w+")
+# automat_50zl = open("./safe/banknoty/50zl", "w+")
 
 ###############
 # Suma kosztów
@@ -152,6 +164,10 @@ while True:
     if event == "1":
         if suma_20n >= 1:
             suma -= suma_20n
+            # UWAGA #1: Popraw floaty tak jak poniżej
+        if ilosc_waluty <= 0 and suma_20n != 0:
+            ilosc_waluty = 0
+            suma_20n = 0
 
         suma_20n = cennik[1] * ilosc
         suma += suma_20n
@@ -303,9 +319,9 @@ while True:
                 [gui.Text("---")],
                 [gui.Button("Wróć"), gui.Button("Wyjdź")]
             ]
-            ##########################
+            # *#*#*#*#*#*#*#*#*#*#*#*#
             # Wyświetlanie Okienka #2
-            ##########################
+            # *#*#*#*#*#*#*#*#*#*#*#*#
             window_two = gui.Window("Automat MPK", layout_two)
 
             suma = float("{:.3f}".format(suma))
@@ -313,496 +329,197 @@ while True:
 
             while True:
                 event, values = window_two.read()
+
+                #################
                 # Dodaj ilość
+                #################
                 if event == "+":
                     ilosc_waluty += 1
                     window_two['-ILOSC-WALUTY-'].update(ilosc_waluty)
 
+                ################
                 # Odejmuj ilość
+                ################
                 if event == "-":
                     ilosc_waluty += -1
                     if ilosc_waluty <= 0:
                         ilosc_waluty = 0
                     window_two['-ILOSC-WALUTY-'].update(ilosc_waluty)
 
+                ##############
                 # Zeruj ilość
+                ##############
                 if event == "Zeruj":
                     ilosc_waluty = 0
                     window_two['-ILOSC-WALUTY-'].update(ilosc_waluty)
 
+                #################
                 # Przycisk - 1gr
+                #################
                 if event == "1gr":
-                    wrzucam = (automat[1] * ilosc_waluty)
+                    wrzucam = (automat[1] * ilosc_waluty)  # ile wrzucam
                     wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_1gr += (automat[1] * ilosc_waluty)
+                    suma_1gr += (automat[1] * ilosc_waluty)  # suma jaką wrzuciłem
                     suma_1gr = float("{:.3f}".format(suma_1gr))
-                    print(f"{suma_1gr} - Wrzucono w sumie")
+                    print(f"{suma_1gr} zł - Wrzucono w sumie")  # log
 
-                    # suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
+                    ilosc_1gr += ilosc_waluty  # zapisujemy łączną ilość 1gr, która została wrzucona
 
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
+                    print(f"{suma} zł - Suma do zapłaty")  # log
+
+                    reszta_do_zaplaty -= wrzucam  # od reszty do zapłaty odejmujemy wrzuconą wartość monety
                     reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
+                    print(f"{reszta_do_zaplaty} zł - Reszta do zapłaty\n---\n")  # log
 
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
+                    # Warunki po wrzuceniu monety
+                    if reszta_do_zaplaty < 0:  # jeśli wrzucimy więcej niż potrzeba
+                        reszta = reszta_do_zaplaty * (-1)  # ujemną liczbę mnożymy przez (-1), aby stała się zwrotna
                         reszta = float("{:.3f}".format(reszta))
-                        suma_1gr += reszta_do_zaplaty
+                        suma_1gr -= reszta  # zapisujemy łączną ilość 1gr, która została wrzucona (pętla)
                         suma_1gr = float("{:.3f}".format(suma_1gr))
-                        # Czy jest wystarczająco monet do wydania reszty
-                        odczyt = float(ilosc_1gr) - float(ilosc_waluty)
-                        if odczyt <= 0:
-                            gui.popup(f"Brak monet 1gr do wydania, prosimy o wrzucić wyrównaną sumę - zwrócono resztę: {wrzucam} zł")
-                            pass
 
-                        #Dodaj do automatu
-                        dodaj_do_automatu = float(ilosc_1gr) + float(ilosc_waluty)
-                        ilosc_1gr.write(int(ilosc_waluty))
+                        # teraz zwroc klientowi reszta_1gr
+                        reszta_1gr = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+
+                        # dodaj do automatu twoją działke
+                        zysk_1gr = float(ilosc_1gr) - float(reszta_1gr)
+
+                        automat_1gr = open("./safe/monety/1gr", "r").read()  # czytamy ilość 1gr w automacie
+                        zapisz_automat_1gr = open("./safe/monety/1gr", "w")  # zmienna do zapisu
+
+                        dodaj_do_automatu = float(automat_1gr) + float(zysk_1gr)  # dodajemy z,do automatu
+                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                        zapisz_automat_1gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 1gr do automatu
+                        zapisz_automat_1gr.close()  # zamknij plik
+
+                        print(f"{int(ilosc_waluty)} - dodano do automatu")  # log
+                        print(f"{int(dodaj_do_automatu)} - łączna ilość 1gr w automacie")  # log
+
                         # Spradza co dzieje się dalej
-                        print(suma_1gr)
-                        print(suma)
-                        print(reszta_do_zaplaty)
+                        print(suma_1gr)  # log
+                        print(suma)  # log
+                        print(reszta_do_zaplaty)  # log
 
                         window_two['-SUMA-ZMIENNA-'].update("zapłacono")
                         gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
+                        window_two.close()  # zamknij okno
+                        break
 
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
+
+                    if reszta_do_zaplaty > 0:  # jeśli jest reszta do zapłaty
+                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)  # aktualizuj sumę
                         # gui.popup(f"Wrzucono: {suma_1gr} zł")
                         gui.popup(f"Wrzucono: {wrzucam} zł")
 
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
+                    if reszta_do_zaplaty == 0:  # jeśli wrzucono odliczoną ilość
+                        automat_1gr = open("./safe/monety/1gr", "r").read()  # czytamy ilość 1gr w automacie
+                        dodaj_do_automatu = float(automat_1gr) + float(ilosc_1gr)  # dodajemy z,do automatu
+                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                        zapisz_automat_1gr = open("./safe/monety/1gr", "w")  # zmienna do zapisu
+                        zapisz_automat_1gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 1gr do automatu
+                        zapisz_automat_1gr.close()  # zamknij plik
+
+                        print(f"{int(ilosc_1gr)} - dodano do automatu o nominale 1gr")
+                        print(f"{int(dodaj_do_automatu)} - łączna ilość 1gr w automacie")
+
+                        # Zapisujemy resztę monet do ich zbiorników, po tym jak 1gr wyrównał płatności
+
+                        automat_2gr = open("./safe/monety/2gr", "r").read()  # czytamy ilość 2gr w automacie
+                        dodaj_do_automatu = float(automat_2gr) + float(ilosc_2gr)  # dodajemy z,do automatu
+                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                        zapisz_automat_2gr = open("./safe/monety/2gr", "w")  # zmienna do zapisu
+                        zapisz_automat_2gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 2gr do automatu
+                        zapisz_automat_2gr.close()  # zamknij plik
+
+                        print(f"{int(ilosc_2gr)} - dodano do automatu o nominale 2gr")
+                        print(f"{int(dodaj_do_automatu)} - łączna ilość 2gr w automacie")
+
+
+                        reszta_do_zaplaty = 0  # zeruj resztę
                         window_two['-SUMA-ZMIENNA-'].update("zapłacono")
                         gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
+                        window_two.close()  # zamknij okno
                 # Koniec testu na 1gr
 
+                #################
                 # Przycisk - 2gr
+                #################
                 if event == "2gr":
-                    wrzucam = (automat[2] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_2gr += (automat[2] * ilosc_waluty)
-                    suma_2gr = float("{:.3f}".format(suma_2gr))
-                    print(f"{suma_2gr} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_2gr += reszta_do_zaplaty
-                        suma_2gr = float("{:.3f}".format(suma_2gr))
-                        # Spradza co dzieje się dalej
-                        print(suma_2gr)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 5gr
+                #################
                 if event == "5gr":
-                    wrzucam = (automat[3] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_5gr += (automat[3] * ilosc_waluty)
-                    suma_5gr = float("{:.3f}".format(suma_5gr))
-                    print(f"{suma_5gr} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_5gr += reszta_do_zaplaty
-                        suma_5gr = float("{:.3f}".format(suma_5gr))
-                        # Spradza co dzieje się dalej
-                        print(suma_5gr)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
-                # Przycisk 10gr
-                if event == "10gr":
-                    wrzucam = (automat[4] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_10gr += (automat[4] * ilosc_waluty)
-                    suma_10gr = float("{:.3f}".format(suma_10gr))
-                    print(f"{suma_10gr} - Wrzucono w sumie")
-
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_10gr += reszta_do_zaplaty
-                        suma_10gr = float("{:.3f}".format(suma_10gr))
-                        # Spradza co dzieje się dalej
-                        print(suma_10gr)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 20gr
+                #################
                 if event == "20gr":
-                    wrzucam = (automat[5] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_20gr += (automat[5] * ilosc_waluty)
-                    suma_20gr = float("{:.3f}".format(suma_20gr))
-                    print(f"{suma_20gr} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_20gr += reszta_do_zaplaty
-                        suma_20gr = float("{:.3f}".format(suma_20gr))
-                        # Spradza co dzieje się dalej
-                        print(suma_20gr)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 50gr
+                #################
                 if event == "50gr":
-                    wrzucam = (automat[6] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_50gr += (automat[6] * ilosc_waluty)
-                    suma_50gr = float("{:.3f}".format(suma_50gr))
-                    print(f"{suma_50gr} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_50gr += reszta_do_zaplaty
-                        suma_50gr = float("{:.3f}".format(suma_50gr))
-                        # Spradza co dzieje się dalej
-                        print(suma_50gr)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 1zł
+                #################
                 if event == "1zł":
-                    wrzucam = (automat[7] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_1zl += (automat[7] * ilosc_waluty)
-                    suma_1zl = float("{:.3f}".format(suma_1zl))
-                    print(f"{suma_1zl} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_1zl += reszta_do_zaplaty
-                        suma_1zl = float("{:.3f}".format(suma_1zl))
-                        # Spradza co dzieje się dalej
-                        print(suma_1zl)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 2zł
+                #################
                 if event == "2zł":
-                    wrzucam = (automat[8] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_2zl += (automat[8] * ilosc_waluty)
-                    suma_2zl = float("{:.3f}".format(suma_2zl))
-                    print(f"{suma_2zl} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_2zl += reszta_do_zaplaty
-                        suma_2zl = float("{:.3f}".format(suma_2zl))
-                        # Spradza co dzieje się dalej
-                        print(suma_2zl)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 5zł
+                #################
                 if event == "5zł":
-                    wrzucam = (automat[9] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_5zl += (automat[9] * ilosc_waluty)
-                    suma_5zl = float("{:.3f}".format(suma_5zl))
-                    print(f"{suma_5zl} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_5zl += reszta_do_zaplaty
-                        suma_5zl = float("{:.3f}".format(suma_5zl))
-                        # Spradza co dzieje się dalej
-                        print(suma_5zl)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 10zł
+                #################
                 if event == "10zł":
-                    wrzucam = (automat[10] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_10zl += (automat[10] * ilosc_waluty)
-                    suma_10zl = float("{:.3f}".format(suma_10zl))
-                    print(f"{suma_10zl} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_10zl += reszta_do_zaplaty
-                        suma_10zl = float("{:.3f}".format(suma_10zl))
-                        # Spradza co dzieje się dalej
-                        print(suma_10zl)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 20zł
+                #################
                 if event == "20zł":
-                    wrzucam = (automat[11] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_20zl += (automat[11] * ilosc_waluty)
-                    suma_20zl = float("{:.3f}".format(suma_20zl))
-                    print(f"{suma_20zl} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_20zl += reszta_do_zaplaty
-                        suma_20zl = float("{:.3f}".format(suma_20zl))
-                        # Spradza co dzieje się dalej
-                        print(suma_20zl)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
+                #################
                 # Przycisk - 50zł
+                #################
                 if event == "50zł":
-                    wrzucam = (automat[12] * ilosc_waluty)
-                    wrzucam = float("{:.3f}".format(wrzucam))
-                    suma_50zl += (automat[12] * ilosc_waluty)
-                    suma_50zl = float("{:.3f}".format(suma_50zl))
-                    print(f"{suma_50zl} - Wrzucono w sumie")
+                    print("under_edit")
 
-                    suma = float("{:.3f}".format(suma))
-                    print(f"{suma} - Suma do zapłaty")
-
-                    reszta_do_zaplaty -= wrzucam  # tu był edit
-                    reszta_do_zaplaty = float("{:.3f}".format(reszta_do_zaplaty))
-                    print(f"{reszta_do_zaplaty} - Reszta do zapłaty\n---\n")
-
-                    # Weryfikuje czy za dużo monet
-                    if reszta_do_zaplaty < 0:
-                        reszta = reszta_do_zaplaty * (-1)
-                        reszta = float("{:.3f}".format(reszta))
-                        suma_50zl += reszta_do_zaplaty
-                        suma_50zl = float("{:.3f}".format(suma_50zl))
-                        # Spradza co dzieje się dalej
-                        print(suma_50zl)
-                        print(suma)
-                        print(reszta_do_zaplaty)
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
-
-
-                    if reszta_do_zaplaty > 0:
-                        window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)
-                        # gui.popup(f"Wrzucono: {suma_1gr} zł")
-                        gui.popup(f"Wrzucono: {wrzucam} zł")
-
-                    if reszta_do_zaplaty == 0:
-                        reszta_do_zaplaty = 0
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
-
-                if event == "Wróć" or gui.WIN_CLOSED:
+                #################
+                # Przycisk - Wróć
+                #################
+                if event == "Wróć":
                     ilosc_waluty = 0
                     suma = reszta_do_zaplaty
                     window_two.close()
                     break
+
+                #################
+                # Przycisk - Wyjdź
+                #################
                 if event == "Wyjdź":
                     gui.popup("Do widzenia!")
                     exit()
+
+                #################
+                # Przycisk - "X" - Okienka
+                #################
+                if event == gui.WIN_CLOSED:
+                    window_two.close()
+                    break
