@@ -1,3 +1,4 @@
+# Wykonanie: Michał Mróz - nr.130631
 ########################################################################
 # Importujemy moduł, który pozwala na utworzenie interfejsu graficznego
 ########################################################################
@@ -164,10 +165,7 @@ while True:
     if event == "1":
         if suma_20n >= 1:
             suma -= suma_20n
-            # UWAGA #1: Popraw floaty tak jak poniżej
-        if ilosc_waluty <= 0 and suma_20n != 0:
-            ilosc_waluty = 0
-            suma_20n = 0
+            suma = float("{:.3f}".format(suma))
 
         suma_20n = cennik[1] * ilosc
         suma += suma_20n
@@ -181,6 +179,7 @@ while True:
     if event == "2":
         if suma_40n > 0:
             suma -= suma_40n
+            suma = float("{:.3f}".format(suma))
 
         suma_40n = cennik[2] * ilosc
         suma += suma_40n
@@ -194,6 +193,7 @@ while True:
     if event == "3":
         if suma_60n > 0:
             suma -= suma_60n
+            suma = float("{:.3f}".format(suma))
 
         suma_60n = cennik[3] * ilosc
         suma += suma_60n
@@ -207,6 +207,7 @@ while True:
     if event == "4":
         if suma_20u > 0:
             suma -= suma_20u
+            suma = float("{:.3f}".format(suma))
 
         suma_20u = cennik[4] * ilosc
         suma += suma_20u
@@ -220,6 +221,7 @@ while True:
     if event == "5":
         if suma_40u > 0:
             suma -= suma_40u
+            suma = float("{:.3f}".format(suma))
 
         suma_40u = cennik[5] * ilosc
         suma += suma_40u
@@ -233,6 +235,7 @@ while True:
     if event == "6":
         if suma_60u > 0:
             suma -= suma_60u
+            suma = float("{:.3f}".format(suma))
 
         suma_60u = cennik[6] * ilosc
         suma += suma_60u
@@ -305,7 +308,8 @@ while True:
             layout_two = [
                 [gui.Text("-- Automat MPK --")],
                 [gui.Text("Wyznacz wartość oraz ilość monet/banknot jakie zostaną wprowadzone do automatu")],
-                [gui.Text("Uwaga! Automat nie wydaje reszty - Prosimy o wprowadzenie wyliczonej sumy")],
+                [gui.Text("Uwaga! Automat nie wydaje reszty banknotom!")],
+                [gui.Text("Prosimy o wprowadzenie wyliczonej sumy")],
                 [gui.Text("---")],
                 [gui.Text(f"Suma: {suma} zł", key='-SUMA-')],
                 [gui.Text(f"Reszta do zapłaty:"), gui.Text(f"{suma}", key='-SUMA-ZMIENNA-'), gui.Text("zł")],
@@ -701,7 +705,7 @@ while True:
                         suma_2gr = float("{:.3f}".format(suma_2gr))
 
                         # teraz zwroc klientowi reszta_2gr
-                        reszta_2gr = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_2gr = float(reszta) / float(automat[2])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_2gr = float(ilosc_2gr) - float(reszta_2gr)
@@ -1023,7 +1027,7 @@ while True:
                         suma_5gr = float("{:.3f}".format(suma_5gr))
 
                         # teraz zwroc klientowi reszta_5gr
-                        reszta_5gr = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_5gr = float(reszta) / float(automat[3])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_5gr = float(ilosc_5gr) - float(reszta_5gr)
@@ -1345,7 +1349,7 @@ while True:
                         suma_10gr = float("{:.3f}".format(suma_10gr))
 
                         # teraz zwroc klientowi reszta_10gr
-                        reszta_10gr = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_10gr = float(reszta) / float(automat[4])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_10gr = float(ilosc_10gr) - float(reszta_10gr)
@@ -1667,7 +1671,7 @@ while True:
                         suma_20gr = float("{:.3f}".format(suma_20gr))
 
                         # teraz zwroc klientowi reszta_20gr
-                        reszta_20gr = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_20gr = float(reszta) / float(automat[5])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_20gr = float(ilosc_20gr) - float(reszta_20gr)
@@ -1989,7 +1993,7 @@ while True:
                         suma_50gr = float("{:.3f}".format(suma_50gr))
 
                         # teraz zwroc klientowi reszta_50gr
-                        reszta_50gr = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_50gr = float(reszta) / float(automat[6])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_50gr = float(ilosc_50gr) - float(reszta_50gr)
@@ -2311,7 +2315,7 @@ while True:
                         suma_1zl = float("{:.3f}".format(suma_1zl))
 
                         # teraz zwroc klientowi reszta_1zl
-                        reszta_1zl = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_1zl = float(reszta) / float(automat[7])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_1zl = float(ilosc_1zl) - float(reszta_1zl)
@@ -2633,7 +2637,7 @@ while True:
                         suma_2zl = float("{:.3f}".format(suma_2zl))
 
                         # teraz zwroc klientowi reszta_2zl
-                        reszta_2zl = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_2zl = float(reszta) / float(automat[8])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_2zl = float(ilosc_2zl) - float(reszta_2zl)
@@ -2955,7 +2959,7 @@ while True:
                         suma_5zl = float("{:.3f}".format(suma_5zl))
 
                         # teraz zwroc klientowi reszta_5zl
-                        reszta_5zl = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_5zl = float(reszta) / float(automat[9])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_5zl = float(ilosc_5zl) - float(reszta_5zl)
@@ -3277,7 +3281,7 @@ while True:
                         suma_10zl = float("{:.3f}".format(suma_10zl))
 
                         # teraz zwroc klientowi reszta_10zl
-                        reszta_10zl = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_10zl = float(reszta) / float(automat[10])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_10zl = float(ilosc_10zl) - float(reszta_10zl)
@@ -3599,7 +3603,7 @@ while True:
                         suma_20zl = float("{:.3f}".format(suma_20zl))
 
                         # teraz zwroc klientowi reszta_20zl
-                        reszta_20zl = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_20zl = float(reszta) / float(automat[11])  # obliczam jaka jest ilość tej reszty
 
                         # dodaj do automatu twoją działke
                         zysk_20zl = float(ilosc_20zl) - float(reszta_20zl)
@@ -3921,155 +3925,166 @@ while True:
                         suma_50zl = float("{:.3f}".format(suma_50zl))
 
                         # teraz zwroc klientowi reszta_50zl
-                        reszta_50zl = float(reszta) / float(automat[1])  # obliczam jaka jest ilość tej reszty
+                        reszta_50zl = float(reszta) / float(automat[12])  # obliczam jaka jest ilość tej reszty
+                        mod50 = reszta % 50
 
-                        # dodaj do automatu twoją działke
-                        zysk_50zl = float(ilosc_50zl) - float(reszta_50zl)
+                        print(mod50)
+                        # Próbowałem stworzyć inny warunek na wytwarzania reszty lecz brakło mi czasu
+                        if mod50 != 0:
+                            gui.popup(f"Automat nie ma jak wydać reszty, zwrócono {wrzucam}")
+                            reszta_do_zaplaty += wrzucam
+                            wrzucam = 0
+                            suma_50zl = 0
+                            ilosc_50zl = 0
+                            reszta_50 = 0
+                        elif mod50 == 0:
+                            # dodaj do automatu twoją działke
+                            zysk_50zl = float(ilosc_50zl) - float(reszta_50zl)
 
-                        automat_50zl = open("./safe/banknoty/50zl", "r").read()  # czytamy ilość 50zl w automacie
-                        zapisz_automat_50zl = open("./safe/banknoty/50zl", "w")  # zmienna do zapisu
+                            automat_50zl = open("./safe/banknoty/50zl", "r").read()  # czytamy ilość 50zl w automacie
+                            zapisz_automat_50zl = open("./safe/banknoty/50zl", "w")  # zmienna do zapisu
 
-                        dodaj_do_automatu = float(automat_50zl) + float(zysk_50zl)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_50zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 50zl do automatu
-                        zapisz_automat_50zl.close()  # zamknij plik
+                            dodaj_do_automatu = float(automat_50zl) + float(zysk_50zl)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_50zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 50zl do automatu
+                            zapisz_automat_50zl.close()  # zamknij plik
 
-                        print(f"{int(ilosc_waluty)} - dodano do automatu")  # log
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 50zl w automacie")  # log
+                            print(f"{int(ilosc_waluty)} - dodano do automatu")  # log
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 50zl w automacie")  # log
 
-                        # Spradza co dzieje się dalej
-                        print(suma_50zl)  # log
-                        print(suma)  # log
-                        print(reszta_do_zaplaty)  # log
+                            # Spradza co dzieje się dalej
+                            print(suma_50zl)  # log
+                            print(suma)  # log
+                            print(reszta_do_zaplaty)  # log
 
-                        window_two['-SUMA-ZMIENNA-'].update("zapłacono")
-                        gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
+                            window_two['-SUMA-ZMIENNA-'].update("zapłacono")
+                            gui.popup(f"Bilet został wydrukowany - zwrócono resztę: {reszta} zł")
 
-                        # Należy tu jeszcze wsadzić funkcje, które doda pozostałe monety do ich zbiorników
+                            # Należy tu jeszcze wsadzić funkcje, które doda pozostałe monety do ich zbiorników
 
-                        # Dodaj monety 1gr
-                        automat_1gr = open("./safe/monety/1gr", "r").read()  # czytamy ilość 1gr w automacie
-                        dodaj_do_automatu = float(automat_1gr) + float(ilosc_1gr)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_1gr = open("./safe/monety/1gr", "w")  # zmienna do zapisu
-                        zapisz_automat_1gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 1gr do automatu
-                        zapisz_automat_1gr.close()  # zamknij plik
+                            # Dodaj monety 1gr
+                            automat_1gr = open("./safe/monety/1gr", "r").read()  # czytamy ilość 1gr w automacie
+                            dodaj_do_automatu = float(automat_1gr) + float(ilosc_1gr)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_1gr = open("./safe/monety/1gr", "w")  # zmienna do zapisu
+                            zapisz_automat_1gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 1gr do automatu
+                            zapisz_automat_1gr.close()  # zamknij plik
 
-                        print(f"{int(ilosc_1gr)} - dodano do automatu o nominale 1gr")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 1gr w automacie")
+                            print(f"{int(ilosc_1gr)} - dodano do automatu o nominale 1gr")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 1gr w automacie")
 
-                        # Dodaj monety 2gr
-                        automat_2gr = open("./safe/monety/2gr", "r").read()  # czytamy ilość 2gr w automacie
-                        dodaj_do_automatu = float(automat_2gr) + float(ilosc_2gr)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_2gr = open("./safe/monety/2gr", "w")  # zmienna do zapisu
-                        zapisz_automat_2gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 2gr do automatu
-                        zapisz_automat_2gr.close()  # zamknij plik
+                            # Dodaj monety 2gr
+                            automat_2gr = open("./safe/monety/2gr", "r").read()  # czytamy ilość 2gr w automacie
+                            dodaj_do_automatu = float(automat_2gr) + float(ilosc_2gr)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_2gr = open("./safe/monety/2gr", "w")  # zmienna do zapisu
+                            zapisz_automat_2gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 2gr do automatu
+                            zapisz_automat_2gr.close()  # zamknij plik
 
-                        print(f"{int(ilosc_2gr)} - dodano do automatu o nominale 2gr")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 2gr w automacie")
+                            print(f"{int(ilosc_2gr)} - dodano do automatu o nominale 2gr")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 2gr w automacie")
 
-                        # Dodaj monety 5gr
-                        automat_5gr = open("./safe/monety/5gr", "r").read()  # czytamy ilość 5gr w automacie
-                        dodaj_do_automatu = float(automat_5gr) + float(ilosc_5gr)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_5gr = open("./safe/monety/5gr", "w")  # zmienna do zapisu
-                        zapisz_automat_5gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 5gr do automatu
-                        zapisz_automat_5gr.close()  # zamknij plik
+                            # Dodaj monety 5gr
+                            automat_5gr = open("./safe/monety/5gr", "r").read()  # czytamy ilość 5gr w automacie
+                            dodaj_do_automatu = float(automat_5gr) + float(ilosc_5gr)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_5gr = open("./safe/monety/5gr", "w")  # zmienna do zapisu
+                            zapisz_automat_5gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 5gr do automatu
+                            zapisz_automat_5gr.close()  # zamknij plik
 
-                        print(f"{int(ilosc_5gr)} - dodano do automatu o nominale 5gr")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 5gr w automacie")
+                            print(f"{int(ilosc_5gr)} - dodano do automatu o nominale 5gr")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 5gr w automacie")
 
-                        # Dodaj monety 10gr
-                        automat_10gr = open("./safe/monety/10gr", "r").read()  # czytamy ilość 10gr w automacie
-                        dodaj_do_automatu = float(automat_10gr) + float(ilosc_10gr)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_10gr = open("./safe/monety/10gr", "w")  # zmienna do zapisu
-                        zapisz_automat_10gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 10gr do automatu
-                        zapisz_automat_10gr.close()  # zamknij plik
+                            # Dodaj monety 10gr
+                            automat_10gr = open("./safe/monety/10gr", "r").read()  # czytamy ilość 10gr w automacie
+                            dodaj_do_automatu = float(automat_10gr) + float(ilosc_10gr)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_10gr = open("./safe/monety/10gr", "w")  # zmienna do zapisu
+                            zapisz_automat_10gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 10gr do automatu
+                            zapisz_automat_10gr.close()  # zamknij plik
 
-                        print(f"{int(ilosc_10gr)} - dodano do automatu o nominale 10gr")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 10gr w automacie")
+                            print(f"{int(ilosc_10gr)} - dodano do automatu o nominale 10gr")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 10gr w automacie")
 
-                        # Dodaj monety 20gr
-                        automat_20gr = open("./safe/monety/20gr", "r").read()  # czytamy ilość 20gr w automacie
-                        dodaj_do_automatu = float(automat_20gr) + float(ilosc_20gr)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_20gr = open("./safe/monety/20gr", "w")  # zmienna do zapisu
-                        zapisz_automat_20gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 20gr do automatu
-                        zapisz_automat_20gr.close()  # zamknij plik
+                            # Dodaj monety 20gr
+                            automat_20gr = open("./safe/monety/20gr", "r").read()  # czytamy ilość 20gr w automacie
+                            dodaj_do_automatu = float(automat_20gr) + float(ilosc_20gr)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_20gr = open("./safe/monety/20gr", "w")  # zmienna do zapisu
+                            zapisz_automat_20gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 20gr do automatu
+                            zapisz_automat_20gr.close()  # zamknij plik
 
-                        print(f"{int(ilosc_20gr)} - dodano do automatu o nominale 20gr")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 20gr w automacie")
+                            print(f"{int(ilosc_20gr)} - dodano do automatu o nominale 20gr")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 20gr w automacie")
 
-                        # Dodaj monety 50gr
-                        automat_50gr = open("./safe/monety/50gr", "r").read()  # czytamy ilość 50gr w automacie
-                        dodaj_do_automatu = float(automat_50gr) + float(ilosc_50gr)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_50gr = open("./safe/monety/50gr", "w")  # zmienna do zapisu
-                        zapisz_automat_50gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 50gr do automatu
-                        zapisz_automat_50gr.close()  # zamknij plik
+                            # Dodaj monety 50gr
+                            automat_50gr = open("./safe/monety/50gr", "r").read()  # czytamy ilość 50gr w automacie
+                            dodaj_do_automatu = float(automat_50gr) + float(ilosc_50gr)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_50gr = open("./safe/monety/50gr", "w")  # zmienna do zapisu
+                            zapisz_automat_50gr.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 50gr do automatu
+                            zapisz_automat_50gr.close()  # zamknij plik
 
-                        print(f"{int(ilosc_50gr)} - dodano do automatu o nominale 50gr")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 50gr w automacie")
+                            print(f"{int(ilosc_50gr)} - dodano do automatu o nominale 50gr")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 50gr w automacie")
 
-                        # Dodaj monety 1zl
-                        automat_1zl = open("./safe/monety/1zl", "r").read()  # czytamy ilość 1zl w automacie
-                        dodaj_do_automatu = float(automat_1zl) + float(ilosc_1zl)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_1zl = open("./safe/monety/1zl", "w")  # zmienna do zapisu
-                        zapisz_automat_1zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 1zl do automatu
-                        zapisz_automat_1zl.close()  # zamknij plik
+                            # Dodaj monety 1zl
+                            automat_1zl = open("./safe/monety/1zl", "r").read()  # czytamy ilość 1zl w automacie
+                            dodaj_do_automatu = float(automat_1zl) + float(ilosc_1zl)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_1zl = open("./safe/monety/1zl", "w")  # zmienna do zapisu
+                            zapisz_automat_1zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 1zl do automatu
+                            zapisz_automat_1zl.close()  # zamknij plik
 
-                        print(f"{int(ilosc_1zl)} - dodano do automatu o nominale 1zl")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 1zl w automacie")
+                            print(f"{int(ilosc_1zl)} - dodano do automatu o nominale 1zl")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 1zl w automacie")
 
-                        # Dodaj monety 2zl
-                        automat_2zl = open("./safe/monety/2zl", "r").read()  # czytamy ilość 2zl w automacie
-                        dodaj_do_automatu = float(automat_2zl) + float(ilosc_2zl)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_2zl = open("./safe/monety/2zl", "w")  # zmienna do zapisu
-                        zapisz_automat_2zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 2zl do automatu
-                        zapisz_automat_2zl.close()  # zamknij plik
+                            # Dodaj monety 2zl
+                            automat_2zl = open("./safe/monety/2zl", "r").read()  # czytamy ilość 2zl w automacie
+                            dodaj_do_automatu = float(automat_2zl) + float(ilosc_2zl)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_2zl = open("./safe/monety/2zl", "w")  # zmienna do zapisu
+                            zapisz_automat_2zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 2zl do automatu
+                            zapisz_automat_2zl.close()  # zamknij plik
 
-                        print(f"{int(ilosc_2zl)} - dodano do automatu o nominale 2zl")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 2zl w automacie")
+                            print(f"{int(ilosc_2zl)} - dodano do automatu o nominale 2zl")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 2zl w automacie")
 
-                        # Dodaj banknoty 5zl
-                        automat_5zl = open("./safe/monety/5zl", "r").read()  # czytamy ilość 5zl w automacie
-                        dodaj_do_automatu = float(automat_5zl) + float(ilosc_5zl)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_5zl = open("./safe/monety/5zl", "w")  # zmienna do zapisu
-                        zapisz_automat_5zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 5zl do automatu
-                        zapisz_automat_5zl.close()  # zamknij plik
+                            # Dodaj banknoty 5zl
+                            automat_5zl = open("./safe/monety/5zl", "r").read()  # czytamy ilość 5zl w automacie
+                            dodaj_do_automatu = float(automat_5zl) + float(ilosc_5zl)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_5zl = open("./safe/monety/5zl", "w")  # zmienna do zapisu
+                            zapisz_automat_5zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 5zl do automatu
+                            zapisz_automat_5zl.close()  # zamknij plik
 
-                        print(f"{int(ilosc_5zl)} - dodano do automatu o nominale 5zl")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 5zl w automacie")
+                            print(f"{int(ilosc_5zl)} - dodano do automatu o nominale 5zl")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 5zl w automacie")
 
-                        # Dodaj banknoty 10zl
-                        automat_10zl = open("./safe/banknoty/10zl", "r").read()  # czytamy ilość 10zl w automacie
-                        dodaj_do_automatu = float(automat_10zl) + float(ilosc_10zl)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_10zl = open("./safe/banknoty/10zl", "w")  # zmienna do zapisu
-                        zapisz_automat_10zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 10zl do automatu
-                        zapisz_automat_10zl.close()  # zamknij plik
+                            # Dodaj banknoty 10zl
+                            automat_10zl = open("./safe/banknoty/10zl", "r").read()  # czytamy ilość 10zl w automacie
+                            dodaj_do_automatu = float(automat_10zl) + float(ilosc_10zl)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_10zl = open("./safe/banknoty/10zl", "w")  # zmienna do zapisu
+                            zapisz_automat_10zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 10zl do automatu
+                            zapisz_automat_10zl.close()  # zamknij plik
 
-                        print(f"{int(ilosc_10zl)} - dodano do automatu o nominale 10zl")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 10zl w automacie")
+                            print(f"{int(ilosc_10zl)} - dodano do automatu o nominale 10zl")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 10zl w automacie")
 
-                        # Dodaj banknoty 20zl
-                        automat_20zl = open("./safe/banknoty/20zl", "r").read()  # czytamy ilość 20zl w automacie
-                        dodaj_do_automatu = float(automat_20zl) + float(ilosc_20zl)  # dodajemy z,do automatu
-                        dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
-                        zapisz_automat_20zl = open("./safe/banknoty/20zl", "w")  # zmienna do zapisu
-                        zapisz_automat_20zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 20zl do automatu
-                        zapisz_automat_20zl.close()  # zamknij plik
+                            # Dodaj banknoty 20zl
+                            automat_20zl = open("./safe/banknoty/20zl", "r").read()  # czytamy ilość 20zl w automacie
+                            dodaj_do_automatu = float(automat_20zl) + float(ilosc_20zl)  # dodajemy z,do automatu
+                            dodaj_do_automatu = float("{:.3f}".format(dodaj_do_automatu))
+                            zapisz_automat_20zl = open("./safe/banknoty/20zl", "w")  # zmienna do zapisu
+                            zapisz_automat_20zl.write(str(int(dodaj_do_automatu)))  # zapisz nową ilość 20zl do automatu
+                            zapisz_automat_20zl.close()  # zamknij plik
 
-                        print(f"{int(ilosc_20zl)} - dodano do automatu o nominale 20zl")
-                        print(f"{int(dodaj_do_automatu)} - łączna ilość 20zl w automacie")
+                            print(f"{int(ilosc_20zl)} - dodano do automatu o nominale 20zl")
+                            print(f"{int(dodaj_do_automatu)} - łączna ilość 20zl w automacie")
 
-                        window_two.close()  # zamknij okno
-                        break
+                            window_two.close()  # zamknij okno
+                            break
 
                     if reszta_do_zaplaty > 0:  # jeśli jest reszta do zapłaty
                         window_two['-SUMA-ZMIENNA-'].update(reszta_do_zaplaty)  # aktualizuj sumę
@@ -4216,13 +4231,16 @@ while True:
                         window_two['-SUMA-ZMIENNA-'].update("zapłacono")
                         gui.popup(f"Bilet został wydrukowany - Dziękujemy!")
                         window_two.close()  # zamknij okno
-                
+
+
                 #################
                 # Przycisk - Wróć
                 #################
                 if event == "Wróć":
                     ilosc_waluty = 0
-                    suma = reszta_do_zaplaty
+                    suma = float(reszta_do_zaplaty)
+                    suma = float("{:.3f}".format(suma))
+                    print(suma)
                     window_two.close()
                     break
 
