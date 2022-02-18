@@ -1,5 +1,5 @@
 from gui import Gui
 
-# Odtwarza cały program
+# Uruchom Program
 gui = Gui()
 gui.run()
