@@ -33,7 +33,7 @@ class Gui:
 
         self.window = None
         self.window_two = None
-    # Funkcja odtwarzająca główne menu w interfejsie graficznym
+
     def run(self):
 
         # Wygląd
@@ -136,7 +136,7 @@ class Gui:
     # funkcja odtwarzająca bramkę płatności
     def platnosc(self):
         self.create_layout_2()
-        self.window_two = gui.Window("Automat MPK", self.layout_two, size=(300, 540))
+        self.window_two = gui.Window("Automat MPK", self.layout_two, size=(330, 360))
 
         while True:
             event2, values2 = self.window_two.read()
@@ -191,9 +191,8 @@ class Gui:
     def create_layout_2(self):
         self.layout_two = [
             [gui.Text("-- Automat MPK --")],
-            [gui.Text("Wyznacz wartość oraz ilość monet/banknot jakie zostaną wprowadzone do automatu")],
-            [gui.Text("Uwaga! Automat nie wydaje reszty banknotom!")],
-            [gui.Text("Prosimy o wprowadzenie wyliczonej sumy")],
+            [gui.Text("Wyznacz wartość oraz ilość monet/banknotów.")],
+            [gui.Text("Prosimy o wprowadzenie wyliczonej sumy!")],
             [gui.Text("---")],
             [gui.Text(f"Suma: {self.suma} zł", key='-SUMA-')],
             [gui.Text(f"Reszta do zapłaty:"), gui.Text(f"{self.suma}", key='-SUMA-ZMIENNA-'), gui.Text("zł")],
