@@ -33,7 +33,7 @@ class Gui:
 
         self.window = None
         self.window_two = None
-
+    # Funkcja odtwarzająca główne menu w interfejsie graficznym
     def run(self):
 
         # Wygląd
