@@ -1,8 +1,11 @@
+########################################################################
+# Importujemy moduł, który pozwala na utworzenie interfejsu graficznego
+########################################################################
 import PySimpleGUI as gui
 
-from data import Pieniadz, PrzechowywaczMonet
+from data import Pieniadz, Wyplatomat
 
-
+# Klasa przeznaczona do interfejsu graficznego
 class Gui:
 
     def __init__(self):
@@ -11,6 +14,29 @@ class Gui:
         self.suma = 0
         self.suma_wprowadzona_gotowka = 0
 
+        self.layout = None
+        self.layout_two = None
+
+        self.evt = {"1": '20n', "2": '40n', "3": '60n', "4": '20u', "5": '40u', "6": '60u'}
+
+        self.kasa = {"1": Pieniadz(2, "zl"), "2": Pieniadz(4, "zl"), "3": Pieniadz(6, "zl"),
+                     "4": Pieniadz(1, "zl"), "5": Pieniadz(2, "zl"), "6": Pieniadz(3, "zl")}
+
+        self.sztTMP = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0}
+
+        self.rozlicz = {"1gr": Pieniadz(0.01, "gr"), "2gr": Pieniadz(0.02, "gr"), "5gr": Pieniadz(0.05, "gr"),
+                        "10gr": Pieniadz(0.1, "gr"), "20gr": Pieniadz(0.2, "gr"), "50gr": Pieniadz(0.5, "gr"),
+                        "1zł": Pieniadz(1, "zł"), "2zł": Pieniadz(2, "zł"), "5zł": Pieniadz(5, "zł"),
+                        "10zł": Pieniadz(10, "zł"), "20zł": Pieniadz(20, "zł"), "50zł": Pieniadz(50, "zł")}
+
+        self.wyplatomat = Wyplatomat()
+
+        self.window = None
+        self.window_two = None
+
+    def run(self):
+
+        # Wygląd
         self.layout = [
             [gui.Text("-- Automat MPK --")],
             [gui.Text("Bilet Normalny:")],
@@ -34,38 +60,21 @@ class Gui:
             [gui.Button("Kup"), gui.Button("Wyzeruj"), gui.Button("Wyjdź")]
         ]
 
-        self.layout_two = None
-
-        self.evt = {"1": '20n', "2": '40n', "3": '60n', "4": '20u', "5": '40u', "6": '60u'}
-
-        self.kasa = {"1": Pieniadz(2, "zl"), "2": Pieniadz(4, "zl"), "3": Pieniadz(6, "zl"),
-                     "4": Pieniadz(1, "zl"), "5": Pieniadz(2, "zl"), "6": Pieniadz(3, "zl")}
-
-        self.sztTMP = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0}
-
-        self.rozlicz = {"1gr": Pieniadz(0.01, "gr"), "2gr": Pieniadz(0.02, "gr"), "5gr": Pieniadz(0.05, "gr"),
-                        "10gr": Pieniadz(0.1, "gr"), "20gr": Pieniadz(0.2, "gr"), "50gr": Pieniadz(0.5, "gr"),
-                        "1zł": Pieniadz(1, "zł"), "2zł": Pieniadz(2, "zł"), "5zł": Pieniadz(5, "zł"),
-                        "10zł": Pieniadz(10, "zł"), "20zł": Pieniadz(20, "zł"), "50zł": Pieniadz(50, "zł")}
-
-        self.przechowywacz = PrzechowywaczMonet()
-
-        self.window = None
-        self.window_two = None
-
+        self.window = gui.Window("Automat MPK", self.layout, size=(300, 540))
         self.mainloop()
 
+    # Odtwarza główną pętlę z interfejsem graficznym
     def mainloop(self):
-        self.window = gui.Window("Automat MPK", self.layout, size=(300, 540))
 
         while 1:
             event, values = self.window.read()
             if event == "Kup":
                 self.platnosc()
             else:
-                self.eventObsluga(event)
+                self.event_obsluga(event)
 
-    def eventObsluga(self, ev):
+    # funkcja do obsługiwania przycisków w interfejsie graficznym
+    def event_obsluga(self, ev):
         if ev == "Wyjdź":
             gui.popup("Do widzenia!")
             exit()
@@ -84,6 +93,8 @@ class Gui:
 
             for a in self.evt.values():
                 self.window[a].update('')
+
+            gui.popup("Wyzerowano!")
 
         if ev == "+":
             self.ilosc += 1
@@ -105,18 +116,24 @@ class Gui:
 
         for x in self.evt.keys():
             if ev == x:
-                tmp = self.ilosc - self.sztTMP.get(x)
-                tmp_dict = {x: self.ilosc}
-                self.sztTMP.update(tmp_dict)
-                self.suma += self.kasa.get(x).wartosc * tmp
-                self.window[self.evt.get(x)].update(f"{self.ilosc} szt.")
+                self.oblicz_sume(x)
+                self.window[self.evt.get(x)].update(f"- Wybrano {self.ilosc} szt. -")
                 self.window['-SUMA-'].update(self.suma)
                 return
         return
 
+    # funkcja obliczająca sumę wybranych biletów z menu gui
+    def oblicz_sume(self, x):
+        tmp = self.ilosc - self.sztTMP.get(x)
+        tmp_dict = {x: self.ilosc}
+        self.sztTMP.update(tmp_dict)
+        self.suma += self.kasa.get(x).wartosc * tmp
+
+    # funkcja aktualizująca wybraną ilość biletów w gui
     def zmien_ilosc_gui(self, ile):
         self.window['-ILOSC-'].update(ile)
 
+    # funkcja odtwarzająca bramkę płatności
     def platnosc(self):
         self.create_layout_2()
         self.window_two = gui.Window("Automat MPK", self.layout_two, size=(300, 540))
@@ -155,16 +172,22 @@ class Gui:
                         self.reset()
                         return
 
+    # zlicza resztę w gui
     def zliczaj_wprowadzona_gotowke(self, ev2):
         for i in self.rozlicz.keys():
             if i == ev2:
-                self.suma_wprowadzona_gotowka += self.rozlicz.get(i).wartosc * self.ilosc2
+                self.zlicz_gotowke(i)
 
                 if (self.suma - self.suma_wprowadzona_gotowka) < 0:
                     self.window_two['-SUMA-ZMIENNA-'].update(0)
                 else:
                     self.window_two['-SUMA-ZMIENNA-'].update(round(self.suma - self.suma_wprowadzona_gotowka, 3))
 
+    # zlicza (wybiera) banknot * ilość
+    def zlicz_gotowke(self, i):
+        self.suma_wprowadzona_gotowka += self.rozlicz.get(i).wartosc * self.ilosc2
+
+    # funkcja budująca nowy layout czyli bramkę płatności w gui
     def create_layout_2(self):
         self.layout_two = [
             [gui.Text("-- Automat MPK --")],
@@ -185,9 +208,9 @@ class Gui:
             [gui.Button("Wróć"), gui.Button("Wyjdź")]
         ]
 
+    # po zakupie biletu, program się resetuje, aby móc korzystać ponownie
     def reset(self):
         self.sztTMP = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0}
-        self.przechowywacz = PrzechowywaczMonet()
         self.suma = 0
         self.window['-SUMA-'].update(0)
         self.window_two['-SUMA-'].update(0)
@@ -203,19 +226,6 @@ class Gui:
 
         self.window_two.close()
 
+    # funkcja zwracająca resztę
     def zwroc_reszta(self):
-
-        print(f"Reszta: {round((self.suma_wprowadzona_gotowka - self.suma), 3)}")
-
-        tmpVal = round((self.suma_wprowadzona_gotowka - self.suma), 3)
-
-        while tmpVal > 0.0:
-            for i in self.przechowywacz.lista_monet:
-                if i.wartosc <= tmpVal:
-                    self.przechowywacz.dodaj(i)
-                    tmpVal -= i.wartosc
-                    break
-                if tmpVal < 0.01:
-                    tmpVal = 0
-
-        self.przechowywacz.wypisz()
+        self.wyplatomat.reszta(self.suma_wprowadzona_gotowka, self.suma)
