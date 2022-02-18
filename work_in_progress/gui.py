@@ -1,13 +1,15 @@
 import PySimpleGUI as gui
 
-from data import Pieniadz
+from data import Pieniadz, PrzechowywaczMonet
 
 
 class Gui:
 
     def __init__(self):
         self.ilosc = 0
+        self.ilosc2 = 0
         self.suma = 0
+        self.suma_wprowadzona_gotowka = 0
 
         self.layout = [
             [gui.Text("-- Automat MPK --")],
@@ -32,24 +34,7 @@ class Gui:
             [gui.Button("Kup"), gui.Button("Wyzeruj"), gui.Button("Wyjdź")]
         ]
 
-        self.layout_two = [
-            [gui.Text("-- Automat MPK --")],
-            [gui.Text("Wyznacz wartość oraz ilość monet/banknot jakie zostaną wprowadzone do automatu")],
-            [gui.Text("Uwaga! Automat nie wydaje reszty banknotom!")],
-            [gui.Text("Prosimy o wprowadzenie wyliczonej sumy")],
-            [gui.Text("---")],
-            [gui.Text(f"Suma: {self.suma} zł", key='-SUMA-')],
-            [gui.Text(f"Reszta do zapłaty:"), gui.Text(f"{self.suma}", key='-SUMA-ZMIENNA-'), gui.Text("zł")],
-            [gui.Button("1gr"), gui.Button("2gr"), gui.Button("5gr"), gui.Button("10gr"), gui.Button("20gr"),
-             gui.Button("50gr")],
-            [gui.Button("1zł"), gui.Button("2zł"), gui.Button("5zł"), gui.Button("10zł"), gui.Button("20zł"),
-             gui.Button("50zł")],
-            [gui.Text("---")],
-            [gui.Text("Ilość:"), gui.Text('0', key='-ILOSC-WALUTY-', size=(3, 1)), gui.Button("+"),
-             gui.Button("-"), gui.Button("Zeruj")],
-            [gui.Text("---")],
-            [gui.Button("Wróć"), gui.Button("Wyjdź")]
-        ]
+        self.layout_two = None
 
         self.evt = {"1": '20n', "2": '40n', "3": '60n', "4": '20u', "5": '40u', "6": '60u'}
 
@@ -58,17 +43,21 @@ class Gui:
 
         self.sztTMP = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0}
 
-        self.rozlicz = {"1gr": Pieniadz(0.01, "gr"),  "2gr": Pieniadz(0.02, "gr"), "5gr": Pieniadz(0.05, "gr"),
+        self.rozlicz = {"1gr": Pieniadz(0.01, "gr"), "2gr": Pieniadz(0.02, "gr"), "5gr": Pieniadz(0.05, "gr"),
                         "10gr": Pieniadz(0.1, "gr"), "20gr": Pieniadz(0.2, "gr"), "50gr": Pieniadz(0.5, "gr"),
-                        "1zł": Pieniadz(1, "gr"), "2zł": Pieniadz(2, "gr"), "5zł": Pieniadz(5, "gr"),
-                        "10zł": Pieniadz(10, "gr"), "20zł": Pieniadz(20, "gr"), "50zł": Pieniadz(50, "gr")}
+                        "1zł": Pieniadz(1, "zł"), "2zł": Pieniadz(2, "zł"), "5zł": Pieniadz(5, "zł"),
+                        "10zł": Pieniadz(10, "zł"), "20zł": Pieniadz(20, "zł"), "50zł": Pieniadz(50, "zł")}
 
-        self.window = gui.Window("Automat MPK", self.layout, size=(300, 540))
+        self.przechowywacz = PrzechowywaczMonet()
+
+        self.window = None
         self.window_two = None
 
         self.mainloop()
 
     def mainloop(self):
+        self.window = gui.Window("Automat MPK", self.layout, size=(300, 540))
+
         while 1:
             event, values = self.window.read()
             if event == "Kup":
@@ -84,6 +73,17 @@ class Gui:
         if ev == gui.WIN_CLOSED:
             self.window.close()
             return
+
+        if ev == "Wyzeruj":
+            self.sztTMP = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0}
+            self.suma = 0
+            self.window['-SUMA-'].update(0)
+            self.suma_wprowadzona_gotowka = 0
+            self.ilosc = 0
+            self.window['-ILOSC-'].update(0)
+
+            for a in self.evt.values():
+                self.window[a].update('')
 
         if ev == "+":
             self.ilosc += 1
@@ -114,10 +114,108 @@ class Gui:
                 return
         return
 
-    def platnosc(self):
-        gui.Window("Automat MPK", self.layout_two, size=(300, 540))
-
-
-
     def zmien_ilosc_gui(self, ile):
         self.window['-ILOSC-'].update(ile)
+
+    def platnosc(self):
+        self.create_layout_2()
+        self.window_two = gui.Window("Automat MPK", self.layout_two, size=(300, 540))
+
+        while True:
+            event2, values2 = self.window_two.read()
+
+            if event2 == "Wróć":
+                self.window_two.close()
+                break
+
+            if event2 == gui.WIN_CLOSED:
+                self.reset()
+                self.window_two.close()
+                break
+
+            if event2 == "+":
+                self.ilosc2 += 1
+                self.window_two['-ILOSC-WALUTY-'].update(self.ilosc2)
+
+            if event2 == "-":
+                if self.ilosc2 != 0:
+                    self.ilosc2 -= 1
+                    self.window_two['-ILOSC-WALUTY-'].update(self.ilosc2)
+
+            if event2 == "Zeruj":
+                self.ilosc2 = 0
+                self.window_two['-ILOSC-WALUTY-'].update(0)
+                self.zmien_ilosc_gui(self.ilosc2)
+
+            for ii in self.rozlicz.keys():
+                if ii == event2:
+                    self.zliczaj_wprowadzona_gotowke(event2)
+                    if self.suma_wprowadzona_gotowka >= self.suma:
+                        self.zwroc_reszta()
+                        self.reset()
+                        return
+
+    def zliczaj_wprowadzona_gotowke(self, ev2):
+        for i in self.rozlicz.keys():
+            if i == ev2:
+                self.suma_wprowadzona_gotowka += self.rozlicz.get(i).wartosc * self.ilosc2
+
+                if (self.suma - self.suma_wprowadzona_gotowka) < 0:
+                    self.window_two['-SUMA-ZMIENNA-'].update(0)
+                else:
+                    self.window_two['-SUMA-ZMIENNA-'].update(round(self.suma - self.suma_wprowadzona_gotowka, 3))
+
+    def create_layout_2(self):
+        self.layout_two = [
+            [gui.Text("-- Automat MPK --")],
+            [gui.Text("Wyznacz wartość oraz ilość monet/banknot jakie zostaną wprowadzone do automatu")],
+            [gui.Text("Uwaga! Automat nie wydaje reszty banknotom!")],
+            [gui.Text("Prosimy o wprowadzenie wyliczonej sumy")],
+            [gui.Text("---")],
+            [gui.Text(f"Suma: {self.suma} zł", key='-SUMA-')],
+            [gui.Text(f"Reszta do zapłaty:"), gui.Text(f"{self.suma}", key='-SUMA-ZMIENNA-'), gui.Text("zł")],
+            [gui.Button("1gr"), gui.Button("2gr"), gui.Button("5gr"), gui.Button("10gr"), gui.Button("20gr"),
+             gui.Button("50gr")],
+            [gui.Button("1zł"), gui.Button("2zł"), gui.Button("5zł"), gui.Button("10zł"), gui.Button("20zł"),
+             gui.Button("50zł")],
+            [gui.Text("---")],
+            [gui.Text("Ilość:"), gui.Text('0', key='-ILOSC-WALUTY-', size=(3, 1)), gui.Button("+"),
+             gui.Button("-"), gui.Button("Zeruj")],
+            [gui.Text("---")],
+            [gui.Button("Wróć"), gui.Button("Wyjdź")]
+        ]
+
+    def reset(self):
+        self.sztTMP = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0, "6": 0}
+        self.przechowywacz = PrzechowywaczMonet()
+        self.suma = 0
+        self.window['-SUMA-'].update(0)
+        self.window_two['-SUMA-'].update(0)
+        self.suma_wprowadzona_gotowka = 0
+        self.window_two['-SUMA-ZMIENNA-'].update(0)
+        self.ilosc = 0
+        self.window['-ILOSC-'].update(0)
+        self.ilosc2 = 0
+        self.window_two['-ILOSC-WALUTY-'].update(0)
+
+        for a in self.evt.values():
+            self.window[a].update('')
+
+        self.window_two.close()
+
+    def zwroc_reszta(self):
+
+        print(f"Reszta: {round((self.suma_wprowadzona_gotowka - self.suma), 3)}")
+
+        tmpVal = round((self.suma_wprowadzona_gotowka - self.suma), 3)
+
+        while tmpVal > 0.0:
+            for i in self.przechowywacz.lista_monet:
+                if i.wartosc <= tmpVal:
+                    self.przechowywacz.dodaj(i)
+                    tmpVal -= i.wartosc
+                    break
+                if tmpVal < 0.01:
+                    tmpVal = 0
+
+        self.przechowywacz.wypisz()
